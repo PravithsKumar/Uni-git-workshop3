@@ -37,6 +37,11 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Use TypeScript with explicit types for function parameters and return values, especially in the data layer (`db/`, `src/lib/`)
 - Frontend code (TypeScript, Astro) must pass ESLint checks (`npm run lint`)
 
+### Documentation requirements
+
+- All new code must include concise TSDoc documentation using `/** ... */` comments for its purpose and public API, including functions, classes, interfaces, types, and exported constants
+- Every new source file must begin with a concise `/** ... */` file comment header describing the file's purpose and responsibility
+
 ### Data Layer Patterns (Drizzle + Node SQLite)
 
 - Define tables in `db/schema.ts`; manage schema changes with drizzle-kit migrations - see `drizzle.instructions.md`
