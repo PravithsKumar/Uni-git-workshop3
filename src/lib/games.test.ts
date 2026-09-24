@@ -3,9 +3,11 @@ import { createTestDatabase } from '../../db/test-helpers';
 import { categories, publishers, games } from '../../db/schema';
 import type { Database } from './db';
 import {
+    getAllCategories,
     getAllGames,
     getAllGameIds,
     getGameById,
+    getAllPublishers,
 } from './games';
 
 async function seedGames(db: Database, count: number): Promise<void> {
@@ -43,6 +45,28 @@ describe('games data-access helpers', () => {
         expect(all.map((g) => g.title)).toEqual(['Game 01', 'Game 02', 'Game 03']);
         expect(all[0].category).toEqual({ id: expect.any(Number), name: 'Strategy' });
         expect(all[0].publisher).toEqual({ id: expect.any(Number), name: 'Pub One' });
+    });
+
+    it('returns categories and publishers ordered by name', async () => {
+        await db.insert(categories).values([
+            { name: 'Strategy', description: 'strategy' },
+            { name: 'Adventure', description: 'adventure' },
+        ]);
+        await db.insert(publishers).values([
+            { name: 'Zeta Games', description: 'zeta' },
+            { name: 'Alpha Games', description: 'alpha' },
+        ]);
+
+        const allCategories = await getAllCategories(db);
+        const allPublishers = await getAllPublishers(db);
+
+        expect(allCategories.map((category) => category.name)).toEqual(['Adventure', 'Strategy']);
+        expect(allPublishers.map((publisher) => publisher.name)).toEqual(['Alpha Games', 'Zeta Games']);
+    });
+
+    it('returns empty filter options when no categories or publishers exist', async () => {
+        expect(await getAllCategories(db)).toEqual([]);
+        expect(await getAllPublishers(db)).toEqual([]);
     });
 
     it('returns all game ids ordered by title', async () => {
